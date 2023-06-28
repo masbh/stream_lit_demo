@@ -24,8 +24,8 @@ import json
 import seaborn as sns
 
 # Load some data
-df = pd.read_csv("https://drive.google.com/file/d/1zO3kM2gsspH4Wyg5OF1u-n_RFz6He_qE/view?usp=drive_link", sep=",")
-df_cont = pd.read_csv("https://drive.google.com/file/d/1YPilsqqlLu27a_ptPTD1458vh5DaG1Wx/view?usp=drive_link", header=0)
+df = pd.read_csv("https://drive.google.com/uc?id=1zO3kM2gsspH4Wyg5OF1u-n_RFz6He_qE", sep=",")
+df_cont = pd.read_csv("https://drive.google.com/uc?id=1YPilsqqlLu27a_ptPTD1458vh5DaG1Wx", header=0)
 
 df.columns = ["country", "code", "year", "usage"]
 df_cont.columns = ["continent", "country"]
