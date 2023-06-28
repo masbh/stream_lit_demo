@@ -11,186 +11,165 @@ Original file is located at
 - Make sure you have a free, personal `ngrok` token: https://dashboard.ngrok.com/auth
 """
 
-!pip install streamlit pyngrok --quiet
 
-!pip install geojson
-
-#import streamlit as st
+import streamlit as st
 from pyngrok import ngrok
 import getpass
 
-"""Let's create a simple Python script making use of Streamlit."""
+import pandas as pd
+import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objects as go
+from urllib.request import urlopen
+import json
+import seaborn as sns
 
-# Commented out IPython magic to ensure Python compatibility.
-# %%writefile streamlit_ex.py
-# import streamlit as st
-# import pandas as pd
-# import matplotlib.pyplot as plt
-# import plotly.express as px
-# import plotly.graph_objects as go
-# from urllib.request import urlopen
-# import json
-# import seaborn as sns
+# Load some data
+df = pd.read_csv(https://drive.google.com/file/d/1zO3kM2gsspH4Wyg5OF1u-n_RFz6He_qE/view?usp=drive_link, sep=",")
+df_cont = pd.read_csv(https://drive.google.com/file/d/1YPilsqqlLu27a_ptPTD1458vh5DaG1Wx/view?usp=drive_link, header=0)
 
+df.columns = ["country", "code", "year", "usage"]
+df_cont.columns = ["continent", "country"]
 
-
-# Commented out IPython magic to ensure Python compatibility.
-# %%writefile -a streamlit_ex.py
-# import streamlit as st
-# import pandas as pd
-# import matplotlib.pyplot as plt
-# import plotly.express as px
-# import plotly.graph_objects as go
-# from urllib.request import urlopen
-# import json
-# import seaborn as sns
-# 
-# # Load some data
-# df = pd.read_csv("internet.csv", sep=",")
-# df_cont = pd.read_csv("countries_continents.csv", header=0)
-# 
-# df.columns = ["country", "code", "year", "usage"]
-# df_cont.columns = ["continent", "country"]
-# 
-# #merge continents to the df
-# df = pd.merge(df, df_cont, on="country", how="inner")
-# df_cont = df.groupby(["continent", "year"])["usage"].sum().reset_index()
-# 
-# 
-# 
-# # Add title and header
-# st.title("Introduction to Streamlit")
-# st.header("Internet Usage Data Exploration")
-# 
-# # Widgets: checkbox (you can replace st.xx with st.sidebar.xx)
-# if st.checkbox("Show Dataframe"):
-#     st.header("This is my dataset:")
-#     st.dataframe(data=df_cont)
-#     st.table(data=df_cont)
-#     st.write(data=df_cont)
-# 
-# data = []
-# trace = go.Scatter(
-#         x=df.groupby("year")["usage"].sum().reset_index(name="usage")["year"],
-#         y=df.groupby("year")["usage"].sum().reset_index(name="usage")["usage"],
-#         mode='lines',
-#     )
-#     # Add the trace object to the data list
-# 
-# data.append(trace)
-# 
-# layout = go.Layout(
-#     title='Internet Usage by year',
-#     xaxis=dict(title='Year'),
-#     yaxis=dict(title='Usage')
-# )
-# 
-# fig1 = go.Figure(data=data, layout=layout)
-# 
-# st.plotly_chart(fig1, theme="streamlit", use_container_width=True)
-# 
-# ## choose the continent to Display
-# 
-# cont = st.selectbox(
-#     'What continent do you want to see',
-#     tuple(df_cont["continent"].unique()))
-# 
-# st.write('You selected:', cont)
-# cont = str(cont)
-# 
-# color_palette = {
-#     'Asia': 'blue',
-#     'Africa': 'green',
-#     'Europe': 'red',
-#     'North America': 'orange',
-#     'South America': 'yellow',
-#     'Oceania': 'pink'
-# }
-# 
-# 
-# data = []
-# continent_data = df_cont[df_cont['continent'] == cont]
-# trace = go.Scatter(
-#         x=continent_data['year'],
-#         y=continent_data['usage'],
-#         mode='lines',
-#         name=cont,
-#         line=dict(color=color_palette[cont])
-#     )
-# 
-# data.append(trace)
-# 
-# layout = go.Layout(
-#     title='Internet Usage by Continent',
-#     xaxis=dict(title='Year'),
-#     yaxis=dict(title='Usage')
-# )
-# 
-# fig2 = go.Figure(data=data, layout=layout)
-# 
-# st.plotly_chart(fig2, theme="streamlit", use_container_width=True)
-# 
-# ### plot the country in that continent
-# country = st.selectbox('What country do you want to see',tuple(df[df["continent"] == cont]["country"].unique()))
-# 
-# country = str(country)
-# 
-# data = []
-# country_data = df[(df["continent"] == cont) & (df["country"] == country)]
-# trace = go.Scatter(
-#         x=country_data['year'],
-#         y=country_data['usage'],
-#         name=cont,
-#         line=dict(color="magenta")
-#     )
-# 
-# data.append(trace)
-# 
-# layout = go.Layout(
-#     title='Internet Usage by country',
-#     xaxis=dict(title='Year'),
-#     yaxis=dict(title='Usage')
-# )
-# 
-# fig3 = go.Figure(data=data, layout=layout)
-# st.plotly_chart(fig3, theme="streamlit", use_container_width=True)
-# 
-# ### all countries in continent for different years
-# 
-# year = st.selectbox('What year do you want to see different countries internet usage?',tuple(df["year"].unique()))
-# 
-# year = int(year)
-# 
-# year_data = df[(df["continent"]==cont) & (df["year"] ==year)]
-# data = []
-# trace  = go.Bar(
-#         x= year_data["country"],
-#         y=year_data['usage'],
-#         )
-# 
-# data.append(trace)
-# 
-# layout = go.Layout(
-#     title='Internet Usage by country',
-#     xaxis=dict(title='country'),
-#     yaxis=dict(title='Usage')
-# )
-# 
-# fig4 = go.Figure(data=data, layout=layout)
-# st.plotly_chart(fig4, theme="streamlit", use_container_width=True)
-# 
-#
+#merge continents to the df
+df = pd.merge(df, df_cont, on="country", how="inner")
+df_cont = df.groupby(["continent", "year"])["usage"].sum().reset_index()
 
 
 
-# Commented out IPython magic to ensure Python compatibility.
-# %%writefile -a streamlit_ex.py
-#
+# Add title and header
+st.title("Introduction to Streamlit")
+st.header("Internet Usage Data Exploration")
 
-# Commented out IPython magic to ensure Python compatibility.
-# %pycat streamlit_ex.py
+# Widgets: checkbox (you can replace st.xx with st.sidebar.xx)
+if st.checkbox("Show Dataframe"):
+    st.header("This is my dataset:")
+    st.dataframe(data=df_cont)
+    st.table(data=df_cont)
+    st.write(data=df_cont)
 
-"""## Test run"""
+data = []
+trace = go.Scatter(
+        x=df.groupby("year")["usage"].sum().reset_index(name="usage")["year"],
+        y=df.groupby("year")["usage"].sum().reset_index(name="usage")["usage"],
+        mode='lines',
+    )
+    # Add the trace object to the data list
+
+data.append(trace)
+
+layout = go.Layout(
+    title='Internet Usage by year',
+    xaxis=dict(title='Year'),
+    yaxis=dict(title='Usage')
+)
+
+fig1 = go.Figure(data=data, layout=layout)
+
+st.plotly_chart(fig1, theme="streamlit", use_container_width=True)
+
+## choose the continent to Display
+
+cont = st.selectbox(
+    'What continent do you want to see',
+    tuple(df_cont["continent"].unique()))
+
+st.write('You selected:', cont)
+cont = str(cont)
+
+color_palette = {
+    'Asia': 'blue',
+    'Africa': 'green',
+    'Europe': 'red',
+    'North America': 'orange',
+    'South America': 'yellow',
+    'Oceania': 'pink'
+}
+
+
+data = []
+continent_data = df_cont[df_cont['continent'] == cont]
+trace = go.Scatter(
+        x=continent_data['year'],
+        y=continent_data['usage'],
+        mode='lines',
+        name=cont,
+        line=dict(color=color_palette[cont])
+    )
+
+data.append(trace)
+
+layout = go.Layout(
+    title='Internet Usage by Continent',
+    xaxis=dict(title='Year'),
+    yaxis=dict(title='Usage')
+)
+
+fig2 = go.Figure(data=data, layout=layout)
+
+st.plotly_chart(fig2, theme="streamlit", use_container_width=True)
+
+### plot the country in that continent
+country = st.selectbox('What country do you want to see',tuple(df[df["continent"] == cont]["country"].unique()))
+
+country = str(country)
+
+data = []
+country_data = df[(df["continent"] == cont) & (df["country"] == country)]
+trace = go.Scatter(
+        x=country_data['year'],
+        y=country_data['usage'],
+        name=cont,
+        line=dict(color="magenta")
+    )
+
+data.append(trace)
+
+layout = go.Layout(
+    title='Internet Usage by country',
+    xaxis=dict(title='Year'),
+    yaxis=dict(title='Usage')
+)
+
+fig3 = go.Figure(data=data, layout=layout)
+st.plotly_chart(fig3, theme="streamlit", use_container_width=True)
+
+### all countries in continent for different years
+
+year = st.selectbox('What year do you want to see different countries internet usage?',tuple(df["year"].unique()))
+
+year = int(year)
+
+year_data = df[(df["continent"]==cont) & (df["year"] ==year)]
+data = []
+trace  = go.Bar(
+        x= year_data["country"],
+        y=year_data['usage'],
+        )
+
+data.append(trace)
+
+layout = go.Layout(
+    title='Internet Usage by country',
+    xaxis=dict(title='country'),
+    yaxis=dict(title='Usage')
+)
+
+fig4 = go.Figure(data=data, layout=layout)
+st.plotly_chart(fig4, theme="streamlit", use_container_width=True)
+
+
+
+
+
+Commented out IPython magic to ensure Python compatibility.
+%%writefile -a streamlit_ex.py
+
+
+Commented out IPython magic to ensure Python compatibility.
+%pycat streamlit_ex.py
+
+# """## Test run""" """ """
 
 def start_tunnel(port=500):
   # Terminate open tunnels if exist
@@ -260,42 +239,9 @@ For some ideas how to create fun (yet informative) visualizations with this data
 - geoJSON file: [Zurich Kreise](https://drive.google.com/file/d/1jS2OxyS7alvJjMYaLH8GGFWcTcjkj37z/view?usp=sharing>)
 """
 
-#open the geojson data
-with open('countries.geojson') as file:
-    json_data = geojson.load(file)
 
-features = json_data['features']
 
-country_names = []
-geometry=[]
 
-#get country name and geometry
-for f in features:
-    country_names.append(f["properties"]["ADMIN"])
-    geometry.append(f["geometry"])
-
-df_geom = pd.DataFrame({'country': country_names, 'geometry': geometry})
-
-#merge the geom with the continent couuntry data
-df_merged = pd.merge(df, df_geom, on="country")
-
-traces = []
-trace =go.Choropleth(
-    locations=df_merged['country'],
-    z=df_merged['usage'],
-    text=df_merged['country'],
-    colorscale='Viridis',
-    colorbar=dict(title='Internet Usage'),
-    geojson=data,
-    featureidkey='properties.ADMIN'
-)
-
-traces.append(trace)
-layout = go.Layout(
-    title_text = "Internet Usage by country"
-)
-fig5 = go.Figure(data=traces, layout=layout )
-fig5.show()
 
 
 
