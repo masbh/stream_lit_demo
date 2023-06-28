@@ -159,18 +159,6 @@ fig4 = go.Figure(data=data, layout=layout)
 st.plotly_chart(fig4, theme="streamlit", use_container_width=True)
 
 
-
-
-
-Commented out IPython magic to ensure Python compatibility.
-%%writefile -a streamlit_ex.py
-
-
-Commented out IPython magic to ensure Python compatibility.
-%pycat streamlit_ex.py
-
-# """## Test run""" """ """
-
 def start_tunnel(port=500):
   # Terminate open tunnels if exist
   ngrok.kill()
@@ -189,7 +177,7 @@ def start_tunnel(port=500):
 
 start_tunnel(8501)
 
-!streamlit run streamlit_ex.py --logger.level=debug
+# !streamlit run streamlit_ex.py --logger.level=debug
 
 """# Mini Project
 
