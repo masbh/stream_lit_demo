@@ -159,23 +159,23 @@ fig4 = go.Figure(data=data, layout=layout)
 st.plotly_chart(fig4, theme="streamlit", use_container_width=True)
 
 
-def start_tunnel(port=500):
-  # Terminate open tunnels if exist
-  ngrok.kill()
+# def start_tunnel(port=500):
+#   # Terminate open tunnels if exist
+#   ngrok.kill()
 
-  # Setting the authtoken
-  # --------------------------------
-  # Get your authtoken from https://dashboard.ngrok.com/auth
-  NGROK_AUTH_TOKEN = getpass.getpass('Enter the ngrok authtoken: ')
-  ngrok.set_auth_token(NGROK_AUTH_TOKEN)
-  # --------------------------------
+#   # Setting the authtoken
+#   # --------------------------------
+#   # Get your authtoken from https://dashboard.ngrok.com/auth
+#   NGROK_AUTH_TOKEN = getpass.getpass('Enter the ngrok authtoken: ')
+#   ngrok.set_auth_token(NGROK_AUTH_TOKEN)
+#   # --------------------------------
 
-  # Open an HTTP tunnel on port 8501 for http://localhost:8501
-  ngrok_tunnel = ngrok.connect(addr=str(port))
-  print("Streamlit URL:", ngrok_tunnel.public_url)
-  return ngrok_tunnel
+#   # Open an HTTP tunnel on port 8501 for http://localhost:8501
+#   ngrok_tunnel = ngrok.connect(addr=str(port))
+#   print("Streamlit URL:", ngrok_tunnel.public_url)
+#   return ngrok_tunnel
 
-start_tunnel(8501)
+# start_tunnel(8501)
 
 # !streamlit run streamlit_ex.py --logger.level=debug
 
